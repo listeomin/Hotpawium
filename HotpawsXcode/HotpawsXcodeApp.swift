@@ -339,11 +339,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func showOnboardingWindow() {
-        // Старая версия (простая):
-        // let contentView = OnboardingView {
-        //     self.closeOnboardingAndCheckPermission()
-        // }
-        
         // Новая версия (с дизайном):
         let contentView = OnboardingViewV2 {
             self.closeOnboardingAndCheckPermission()

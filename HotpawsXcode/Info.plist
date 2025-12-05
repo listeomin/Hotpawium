@@ -6,13 +6,7 @@
 	<array>
 		<dict/>
 	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>UbuntuMono-Regular.ttf</string>
-		<string>UbuntuMono-Bold.ttf</string>
-		<string>Ubuntu-Regular.ttf</string>
-		<string>Ubuntu-Medium.ttf</string>
-		<string>Ubuntu-Bold.ttf</string>
-	</array>
+	<key>ATSApplicationFontsPath</key>
+	<string>.</string>
 </dict>
 </plist>
