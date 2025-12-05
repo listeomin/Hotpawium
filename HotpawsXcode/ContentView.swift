@@ -49,6 +49,20 @@ struct FullscreenOverlayView: View {
             
             Color.black.opacity(settings.darkness)
                 .ignoresSafeArea()
+            
+            // Кнопки категорий
+            VStack {
+                HStack(spacing: 48) {
+                    CategoryButton(emoji: "🐾", title: "GIT")
+                    CategoryButton(emoji: "📦", title: "NPM")
+                    CategoryButton(emoji: "📁", title: "Files")
+                    CategoryButton(emoji: "🌐", title: "Network")
+                    CategoryButton(emoji: "⚙️", title: "System")
+                }
+                .padding(.top, 128)
+                
+                Spacer()
+            }
         }
     }
 }
