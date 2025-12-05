@@ -60,7 +60,8 @@ struct FullscreenOverlayView: View {
                             title: category.title,
                             action: {
                                 selectedCategoryIndex = index
-                            }
+                            },
+                            isSelected: selectedCategoryIndex == index
                         )
                     }
                 }

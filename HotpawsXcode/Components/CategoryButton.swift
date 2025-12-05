@@ -4,6 +4,7 @@ struct CategoryButton: View {
     let emoji: String
     let title: String
     let action: () -> Void
+    let isSelected: Bool
     @State private var isHovered = false
     
     var body: some View {
@@ -14,37 +15,47 @@ struct CategoryButton: View {
                 
                 Text(title)
                     .font(.system(size: 20, weight: .medium))
-                    .foregroundColor(isHovered ? .black : Color(hex: "E5E5EA"))
+                    .foregroundColor(
+                        isSelected ? Color(hex: "E5E5EA") :
+                        isHovered ? .black : Color(hex: "E5E5EA")
+                    )
             }
             .frame(width: 200, height: 80)
             .background(
                 ZStack {
                     // Фон
                     RoundedRectangle(cornerRadius: 40)
-                        .fill(isHovered ? Color(hex: "FFDD00").opacity(0.95) : Color(hex: "1E1E28"))
+                        .fill(
+                            isSelected ? Color(hex: "202643") :
+                            isHovered ? Color(hex: "FFDD00").opacity(0.95) :
+                            Color(hex: "1E1E28")
+                        )
                     
                     // Обводка
                     RoundedRectangle(cornerRadius: 40)
                         .strokeBorder(
                             LinearGradient(
-                                colors: isHovered ? 
+                                colors: isSelected ?
+                                    [Color(hex: "2B2B4C"), Color(hex: "181B25")] :
+                                isHovered ?
                                     [Color(hex: "FEDB31"), Color(hex: "FEDB31")] :
-                                    [Color(hex: "4B4B52"), Color(hex: "4B4B53")],
+                                    [Color(hex: "2D2D44"), Color(hex: "333353")],
                                 startPoint: .top,
                                 endPoint: .bottom
                             ),
-                            lineWidth: 3
+                            lineWidth: isSelected ? 3 : (isHovered ? 3 : 2)
                         )
                 }
             )
             .shadow(
-                color: isHovered ? Color(hex: "FFDD00").opacity(0.5) : .clear,
+                color: (isHovered && !isSelected) ? Color(hex: "FFDD00").opacity(0.5) : .clear,
                 radius: 25,
                 x: 0,
                 y: 0
             )
-            .scaleEffect(isHovered ? 1.05 : 1.0)
+            .scaleEffect((isHovered && !isSelected) ? 1.05 : 1.0)
             .animation(.easeInOut(duration: 0.2), value: isHovered)
+            .animation(.easeInOut(duration: 0.2), value: isSelected)
         }
         .buttonStyle(PlainButtonStyle())
         .onHover { hovering in
@@ -92,7 +103,7 @@ struct CategoryButton_Previews: PreviewProvider {
         ZStack {
             Color.black.ignoresSafeArea()
             
-            CategoryButton(emoji: "🐾", title: "GIT", action: {})
+            CategoryButton(emoji: "🐾", title: "GIT", action: {}, isSelected: false)
         }
     }
 }

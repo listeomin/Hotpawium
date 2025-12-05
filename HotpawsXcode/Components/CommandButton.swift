@@ -4,6 +4,7 @@ struct CommandButton: View {
     let title: String
     let description: String
     @State private var isHovered = false
+    @State private var isPressed = false
     
     var body: some View {
         Button(action: {
@@ -13,11 +14,17 @@ struct CommandButton: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(isHovered ? .black : Color(hex: "D2D2D4"))
+                    .foregroundColor(
+                        isPressed ? Color(hex: "E5E5EA") :
+                        isHovered ? .black : Color(hex: "D2D2D4")
+                    )
                 
                 Text(description)
                     .font(.system(size: 11))
-                    .foregroundColor(isHovered ? Color(hex: "595959") : Color(hex: "69697C"))
+                    .foregroundColor(
+                        isPressed ? Color(hex: "69697C") :
+                        isHovered ? Color(hex: "595959") : Color(hex: "69697C")
+                    )
                     .lineLimit(2)
             }
             .frame(width: 340, height: 115, alignment: .leading)
@@ -26,32 +33,48 @@ struct CommandButton: View {
                 ZStack {
                     // Фон
                     RoundedRectangle(cornerRadius: 24)
-                        .fill(isHovered ? Color(hex: "FFDD00").opacity(0.95) : Color(hex: "1E1E28"))
+                        .fill(
+                            isPressed ? Color(hex: "202643") :
+                            isHovered ? Color(hex: "FFDD00").opacity(0.95) :
+                            Color(hex: "1E1E28")
+                        )
                     
                     // Обводка
                     RoundedRectangle(cornerRadius: 24)
                         .strokeBorder(
                             LinearGradient(
-                                colors: isHovered ?
+                                colors: isPressed ?
+                                    [Color(hex: "2B2B4C"), Color(hex: "181B25")] :
+                                isHovered ?
                                     [Color(hex: "FEDB31"), Color(hex: "FEDB31")] :
-                                    [Color(hex: "4B4B52"), Color(hex: "4B4B53")],
+                                    [Color(hex: "2D2D44"), Color(hex: "333353")],
                                 startPoint: .top,
                                 endPoint: .bottom
                             ),
-                            lineWidth: 2
+                            lineWidth: isPressed ? 3 : 2
                         )
                 }
             )
             .shadow(
-                color: isHovered ? Color(hex: "FFDD00").opacity(0.5) : .clear,
+                color: (isHovered && !isPressed) ? Color(hex: "FFDD00").opacity(0.5) : .clear,
                 radius: 25,
                 x: 0,
                 y: 0
             )
-            .scaleEffect(isHovered ? 1.02 : 1.0)
+            .scaleEffect((isHovered && !isPressed) ? 1.02 : 1.0)
             .animation(.easeInOut(duration: 0.2), value: isHovered)
+            .animation(.easeInOut(duration: 0.1), value: isPressed)
         }
         .buttonStyle(PlainButtonStyle())
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    isPressed = true
+                }
+                .onEnded { _ in
+                    isPressed = false
+                }
+        )
         .onHover { hovering in
             isHovered = hovering
             if hovering {
