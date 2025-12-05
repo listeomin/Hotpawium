@@ -3,13 +3,11 @@ import SwiftUI
 struct CategoryButton: View {
     let emoji: String
     let title: String
+    let action: () -> Void
     @State private var isHovered = false
     
     var body: some View {
-        Button(action: {
-            // Действие при нажатии
-            print("Button tapped: \(title)")
-        }) {
+        Button(action: action) {
             HStack(spacing: 12) {
                 Text(emoji)
                     .font(.system(size: 32))
@@ -94,7 +92,7 @@ struct CategoryButton_Previews: PreviewProvider {
         ZStack {
             Color.black.ignoresSafeArea()
             
-            CategoryButton(emoji: "🐾", title: "GIT")
+            CategoryButton(emoji: "🐾", title: "GIT", action: {})
         }
     }
 }

@@ -40,6 +40,7 @@ struct LiveBlurView: NSViewRepresentable {
 // 2) overlay с blur + черный слой
 struct FullscreenOverlayView: View {
     @ObservedObject var settings: OverlaySettings
+    @State private var selectedCategoryIndex = 0
     
     var body: some View {
         ZStack {
@@ -53,109 +54,38 @@ struct FullscreenOverlayView: View {
             VStack {
                 // Кнопки категорий
                 HStack(spacing: 48) {
-                    CategoryButton(emoji: "🐾", title: "GIT")
-                    CategoryButton(emoji: "📦", title: "NPM")
-                    CategoryButton(emoji: "📁", title: "Files")
-                    CategoryButton(emoji: "🌐", title: "Network")
-                    CategoryButton(emoji: "⚙️", title: "System")
+                    ForEach(Array(categories.enumerated()), id: \.offset) { index, category in
+                        CategoryButton(
+                            emoji: category.emoji,
+                            title: category.title,
+                            action: {
+                                selectedCategoryIndex = index
+                            }
+                        )
+                    }
                 }
                 .padding(.top, 128)
                 
                 Spacer()
             }
             
-            // Группы с командами в центре
+            // Группы команд для выбранной категории
             HStack(spacing: 120) {
-                // БАЗОВОЕ
-                VStack(alignment: .leading, spacing: 24) {
-                    Text("БАЗОВОЕ")
-                        .font(.system(size: 24, weight: .regular))
-                        .foregroundColor(Color(hex: "6F6F73"))
-                        .kerning(2)
-                    
-                    VStack(spacing: 16) {
-                        CommandButton(
-                            title: "git status",
-                            description: "Показать состояние рабочей копии репозитория"
-                        )
-                        CommandButton(
-                            title: "git add .",
-                            description: "Добавить все изменения в индекс"
-                        )
-                        CommandButton(
-                            title: "git commit -m",
-                            description: "Создать коммит с сообщением"
-                        )
-                        CommandButton(
-                            title: "git push",
-                            description: "Отправить изменения в удаленный репозиторий"
-                        )
-                        CommandButton(
-                            title: "git pull",
-                            description: "Получить изменения из удаленного репозитория"
-                        )
-                    }
-                }
-                
-                // ВЕТКИ
-                VStack(alignment: .leading, spacing: 24) {
-                    Text("ВЕТКИ")
-                        .font(.system(size: 24, weight: .regular))
-                        .foregroundColor(Color(hex: "6F6F73"))
-                        .kerning(2)
-                    
-                    VStack(spacing: 16) {
-                        CommandButton(
-                            title: "git branch",
-                            description: "Показать список веток"
-                        )
-                        CommandButton(
-                            title: "git checkout -b",
-                            description: "Создать и переключиться на новую ветку"
-                        )
-                        CommandButton(
-                            title: "git checkout",
-                            description: "Переключиться на другую ветку"
-                        )
-                        CommandButton(
-                            title: "git merge",
-                            description: "Объединить ветку с текущей"
-                        )
-                        CommandButton(
-                            title: "git branch -d",
-                            description: "Удалить локальную ветку"
-                        )
-                    }
-                }
-                
-                // ИСТОРИЯ
-                VStack(alignment: .leading, spacing: 24) {
-                    Text("ИСТОРИЯ")
-                        .font(.system(size: 24, weight: .regular))
-                        .foregroundColor(Color(hex: "6F6F73"))
-                        .kerning(2)
-                    
-                    VStack(spacing: 16) {
-                        CommandButton(
-                            title: "git log",
-                            description: "Показать историю коммитов"
-                        )
-                        CommandButton(
-                            title: "git log --oneline",
-                            description: "Показать краткую историю коммитов"
-                        )
-                        CommandButton(
-                            title: "git diff",
-                            description: "Показать изменения в файлах"
-                        )
-                        CommandButton(
-                            title: "git show",
-                            description: "Показать информацию о коммите"
-                        )
-                        CommandButton(
-                            title: "git reset --hard",
-                            description: "Сбросить изменения до указанного коммита"
-                        )
+                ForEach(categories[selectedCategoryIndex].groups) { group in
+                    VStack(alignment: .leading, spacing: 24) {
+                        Text(group.title)
+                            .font(.system(size: 24, weight: .regular))
+                            .foregroundColor(Color(hex: "6F6F73"))
+                            .kerning(2)
+                        
+                        VStack(spacing: 16) {
+                            ForEach(group.commands) { command in
+                                CommandButton(
+                                    title: command.title,
+                                    description: command.description
+                                )
+                            }
+                        }
                     }
                 }
             }
