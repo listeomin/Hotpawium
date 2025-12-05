@@ -14,7 +14,7 @@ struct CategoryButton: View {
                     .font(.system(size: 32))
                 
                 Text(title)
-                    .font(.system(size: 20, weight: .medium))
+                    .font(.custom("UbuntuMono-Regular", size: 20))
                     .foregroundColor(
                         isSelected ? Color(hex: "E5E5EA") :
                         isHovered ? .black : Color(hex: "E5E5EA")

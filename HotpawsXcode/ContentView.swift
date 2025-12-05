@@ -75,7 +75,7 @@ struct FullscreenOverlayView: View {
                 ForEach(categories[selectedCategoryIndex].groups) { group in
                     VStack(alignment: .leading, spacing: 24) {
                         Text(group.title)
-                            .font(.system(size: 24, weight: .regular))
+                            .font(.custom("UbuntuMono-Regular", size: 24))
                             .foregroundColor(Color(hex: "6F6F73"))
                             .kerning(2)
                         

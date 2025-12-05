@@ -339,14 +339,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func showOnboardingWindow() {
-        let contentView = OnboardingView {
+        // Старая версия (простая):
+        // let contentView = OnboardingView {
+        //     self.closeOnboardingAndCheckPermission()
+        // }
+        
+        // Новая версия (с дизайном):
+        let contentView = OnboardingViewV2 {
             self.closeOnboardingAndCheckPermission()
         }
         
         let hostingController = NSHostingController(rootView: contentView)
         
         onboardingWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
+            contentRect: NSRect(x: 0, y: 0, width: 770, height: 480),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false

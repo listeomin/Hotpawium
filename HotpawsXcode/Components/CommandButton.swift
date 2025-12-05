@@ -13,14 +13,14 @@ struct CommandButton: View {
         }) {
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
-                    .font(.system(size: 18, weight: .medium))
+                    .font(.custom("UbuntuMono-Regular", size: 18))
                     .foregroundColor(
                         isPressed ? Color(hex: "E5E5EA") :
                         isHovered ? .black : Color(hex: "D2D2D4")
                     )
                 
                 Text(description)
-                    .font(.system(size: 11))
+                    .font(.custom("Ubuntu-Regular", size: 11))
                     .foregroundColor(
                         isPressed ? Color(hex: "69697C") :
                         isHovered ? Color(hex: "595959") : Color(hex: "69697C")
