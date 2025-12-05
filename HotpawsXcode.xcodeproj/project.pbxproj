@@ -33,6 +33,7 @@
 		4F7475C92EE34CC800A5EE54 /* UbuntuMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F7475B92EE34C5C00A5EE54 /* UbuntuMono-BoldItalic.ttf */; };
 		4F7475CA2EE34CC800A5EE54 /* UbuntuMono-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F7475B72EE34C5C00A5EE54 /* UbuntuMono-Italic.ttf */; };
 		4F7475CB2EE34CC800A5EE54 /* UbuntuMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F7475B82EE34C5C00A5EE54 /* UbuntuMono-Regular.ttf */; };
+		4F7475CE2EE3528A00A5EE54 /* PhosphorSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4F7475CD2EE3528A00A5EE54 /* PhosphorSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F7475CE2EE3528A00A5EE54 /* PhosphorSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +230,9 @@
 			dependencies = (
 			);
 			name = HotpawsXcode;
+			packageProductDependencies = (
+				4F7475CD2EE3528A00A5EE54 /* PhosphorSwift */,
+			);
 			productName = HotpawsXcode;
 			productReference = 4F7176102EE306A50016FF2B /* HotpawsXcode.app */;
 			productType = "com.apple.product-type.application";
@@ -300,6 +305,9 @@
 				Base,
 			);
 			mainGroup = 4F7176072EE306A50016FF2B;
+			packageReferences = (
+				4F7475CC2EE3528A00A5EE54 /* XCRemoteSwiftPackageReference "swift" */,
+			);
 			productRefGroup = 4F7176112EE306A50016FF2B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -685,6 +693,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4F7475CC2EE3528A00A5EE54 /* XCRemoteSwiftPackageReference "swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/phosphor-icons/swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4F7475CD2EE3528A00A5EE54 /* PhosphorSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4F7475CC2EE3528A00A5EE54 /* XCRemoteSwiftPackageReference "swift" */;
+			productName = PhosphorSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4F7176082EE306A50016FF2B /* Project object */;
 }

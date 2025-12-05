@@ -1,7 +1,8 @@
 import SwiftUI
+import PhosphorSwift
 
 struct CategoryButton: View {
-    let emoji: String
+    let icon: Image // Изменили на прямую передачу Image
     let title: String
     let action: () -> Void
     let isSelected: Bool
@@ -10,8 +11,15 @@ struct CategoryButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
-                Text(emoji)
-                    .font(.system(size: 32))
+                // Используем Phosphor иконку
+                icon
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 32, height: 32)
+                    .foregroundColor(
+                        isSelected ? Color(hex: "E5E5EA") :
+                        isHovered ? .black : Color(hex: "E5E5EA")
+                    )
                 
                 Text(title)
                     .font(.custom("UbuntuMono-Regular", size: 20))
@@ -27,7 +35,7 @@ struct CategoryButton: View {
                     RoundedRectangle(cornerRadius: 40)
                         .fill(
                             isSelected ? Color(hex: "202643") :
-                            isHovered ? Color(hex: "FFDD00").opacity(0.95) :
+                            (isHovered && !isSelected) ? Color(hex: "FFDD00").opacity(0.95) :
                             Color(hex: "1E1E28")
                         )
                     
@@ -37,13 +45,13 @@ struct CategoryButton: View {
                             LinearGradient(
                                 colors: isSelected ?
                                     [Color(hex: "2B2B4C"), Color(hex: "181B25")] :
-                                isHovered ?
+                                (isHovered && !isSelected) ?
                                     [Color(hex: "FEDB31"), Color(hex: "FEDB31")] :
                                     [Color(hex: "2D2D44"), Color(hex: "333353")],
                                 startPoint: .top,
                                 endPoint: .bottom
                             ),
-                            lineWidth: isSelected ? 3 : (isHovered ? 3 : 2)
+                            lineWidth: isSelected ? 3 : ((isHovered && !isSelected) ? 3 : 2)
                         )
                 }
             )
@@ -103,7 +111,7 @@ struct CategoryButton_Previews: PreviewProvider {
         ZStack {
             Color.black.ignoresSafeArea()
             
-            CategoryButton(emoji: "🐾", title: "GIT", action: {}, isSelected: false)
+            CategoryButton(icon: Ph.githubLogo.regular, title: "GIT", action: {}, isSelected: false)
         }
     }
 }

@@ -25,44 +25,45 @@ class OverlaySettings: ObservableObject {
         // Выполняем в фоновом потоке
         DispatchQueue.global(qos: .userInitiated).async {
             let script: String
-            let escapedCommand = command.replacingOccurrences(of: "\\", with: "\\\\")
-                                       .replacingOccurrences(of: "\"", with: "\\\"")
             
             switch self.selectedTerminal {
             case .iterm:
+                // Простой скрипт для iTerm - activate запустит приложение если нужно
                 script = """
-tell application "iTerm"
-    activate
-    delay 1.5
-    if (count of windows) = 0 then
-        set newWindow to (create window with default profile)
-        tell current session of newWindow
-            write text "\(escapedCommand)"
-        end tell
-    else
-        tell current window
-            tell current session
-                write text "\(escapedCommand)"
-            end tell
-        end tell
-    end if
-end tell
-"""
+                tell application "iTerm"
+                    activate
+                    delay 1.5
+                    
+                    if (count of windows) = 0 then
+                        set newWindow to (create window with default profile)
+                        tell current session of newWindow
+                            write text "\(command)"
+                        end tell
+                    else
+                        tell current window
+                            tell current session
+                                write text "\(command)"
+                            end tell
+                        end tell
+                    end if
+                end tell
+                """
                 
             case .terminal:
                 script = """
-tell application "Terminal"
-    activate
-    delay 0.5
-    if (count of windows) = 0 then
-        do script "\(escapedCommand)"
-    else
-        tell front window
-            do script "\(escapedCommand)" in selected tab
-        end tell
-    end if
-end tell
-"""
+                tell application "Terminal"
+                    activate
+                    delay 0.5
+                    
+                    if (count of windows) = 0 then
+                        do script "\(command)"
+                    else
+                        tell front window
+                            do script "\(command)" in selected tab
+                        end tell
+                    end if
+                end tell
+                """
             }
             
             var error: NSDictionary?
@@ -123,12 +124,12 @@ struct FullscreenOverlayView: View {
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
             
-            VStack(alignment: .leading, spacing: 0) {
-                // Кнопки категорий - фиксированы вверху
+            VStack {
+                // Кнопки категорий
                 HStack(spacing: 48) {
                     ForEach(Array(categories.enumerated()), id: \.offset) { index, category in
                         CategoryButton(
-                            icon: category.icon,
+                            icon: category.icon, // Передаём Phosphor иконку
                             title: category.title,
                             action: {
                                 selectedCategoryIndex = index
@@ -138,33 +139,29 @@ struct FullscreenOverlayView: View {
                     }
                 }
                 .padding(.top, 128)
-                .frame(maxWidth: .infinity)
                 
-                // ScrollView для групп команд с отступом 120px сверху
-                ScrollView(.vertical, showsIndicators: true) {
-                    HStack(alignment: .top, spacing: 120) {
-                        ForEach(categories[selectedCategoryIndex].groups) { group in
-                            VStack(alignment: .leading, spacing: 24) {
-                                Text(group.title)
-                                    .font(.custom("UbuntuMono-Regular", size: 24))
-                                    .foregroundColor(Color(hex: "6F6F73"))
-                                    .kerning(2)
-                                
-                                VStack(spacing: 16) {
-                                    ForEach(group.commands) { command in
-                                        CommandButton(
-                                            title: command.title,
-                                            description: command.description,
-                                            settings: settings
-                                        )
-                                    }
-                                }
+                Spacer()
+            }
+            
+            // Группы команд для выбранной категории
+            HStack(spacing: 120) {
+                ForEach(categories[selectedCategoryIndex].groups) { group in
+                    VStack(alignment: .leading, spacing: 24) {
+                        Text(group.title)
+                            .font(.custom("UbuntuMono-Regular", size: 24))
+                            .foregroundColor(Color(hex: "6F6F73"))
+                            .kerning(2)
+                        
+                        VStack(spacing: 16) {
+                            ForEach(group.commands) { command in
+                                CommandButton(
+                                    title: command.title,
+                                    description: command.description,
+                                    settings: settings
+                                )
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 120)
-                    .padding(.bottom, 60)
                 }
             }
         }

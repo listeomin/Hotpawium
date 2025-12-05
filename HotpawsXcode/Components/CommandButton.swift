@@ -1,26 +1,62 @@
 import SwiftUI
+import AppKit
+
+// NSView для обработки правого клика
+class RightClickView: NSView {
+    var onRightClick: (() -> Void)?
+    
+    override func rightMouseDown(with event: NSEvent) {
+        onRightClick?()
+    }
+}
+
+struct RightClickViewRepresentable: NSViewRepresentable {
+    let onRightClick: () -> Void
+    
+    func makeNSView(context: Context) -> RightClickView {
+        let view = RightClickView()
+        view.onRightClick = onRightClick
+        return view
+    }
+    
+    func updateNSView(_ nsView: RightClickView, context: Context) {
+        nsView.onRightClick = onRightClick
+    }
+}
 
 struct CommandButton: View {
     let title: String
     let description: String
     @State private var isHovered = false
     @State private var isPressed = false
+    @State private var showCopiedTooltip = false
+    @ObservedObject var settings: OverlaySettings
     
     var body: some View {
         Button(action: {
-            // Действие при нажатии
-            print("Command tapped: \(title)")
+            // Копирование команды в буфер обмена
+            let pasteboard = NSPasteboard.general
+            pasteboard.clearContents()
+            pasteboard.setString(title, forType: .string)
+            
+            // Показать подсказку
+            showCopiedTooltip = true
+            
+            // Скрыть подсказку через 1 секунду
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                showCopiedTooltip = false
+            }
         }) {
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
-                    .font(.custom("UbuntuMono-Regular", size: 18))
+                    .font(.custom("UbuntuMono-Regular", size: 22))
                     .foregroundColor(
                         isPressed ? Color(hex: "E5E5EA") :
                         isHovered ? .black : Color(hex: "D2D2D4")
                     )
                 
                 Text(description)
-                    .font(.custom("Ubuntu-Regular", size: 11))
+                    .font(.custom("Ubuntu-Regular", size: 16))
                     .foregroundColor(
                         isPressed ? Color(hex: "69697C") :
                         isHovered ? Color(hex: "595959") : Color(hex: "69697C")
@@ -64,6 +100,30 @@ struct CommandButton: View {
             .scaleEffect((isHovered && !isPressed) ? 1.02 : 1.0)
             .animation(.easeInOut(duration: 0.2), value: isHovered)
             .animation(.easeInOut(duration: 0.1), value: isPressed)
+            .overlay(
+                // Подсказка "скопировано"
+                Group {
+                    if showCopiedTooltip {
+                        Text("Скопировано")
+                            .font(.custom("Ubuntu-Regular", size: 12))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.black.opacity(0.8))
+                            )
+                            .offset(y: -70)
+                            .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.2), value: showCopiedTooltip)
+            )
+            .overlay(
+                // Невидимый слой для обработки правого клика
+                RightClickViewRepresentable(onRightClick: handleRightClick)
+                    .allowsHitTesting(true)
+            )
         }
         .buttonStyle(PlainButtonStyle())
         .simultaneousGesture(
@@ -84,6 +144,14 @@ struct CommandButton: View {
             }
         }
     }
+    
+    private func handleRightClick() {
+        // Выполнить команду в терминале
+        settings.executeCommandInTerminal(title)
+        
+        // Скрыть приложение
+        NSApplication.shared.hide(nil)
+    }
 }
 
 // Preview
@@ -94,7 +162,8 @@ struct CommandButton_Previews: PreviewProvider {
             
             CommandButton(
                 title: "git status",
-                description: "Показать состояние рабочей копии репозитория"
+                description: "Показать состояние рабочей копии репозитория",
+                settings: OverlaySettings()
             )
         }
     }

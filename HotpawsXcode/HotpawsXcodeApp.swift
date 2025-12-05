@@ -58,6 +58,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             showOnboardingOnStartup = true // По умолчанию включено
         }
         
+        // Устанавливаем по умолчанию iTerm2
+        selectedTerminal = .iterm2
+        overlaySettings.selectedTerminal = .iterm
+        
         // Создаем menu bar
         setupMenuBar()
         
@@ -212,11 +216,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func selectTerminalApp() {
         selectedTerminal = .terminal
+        overlaySettings.selectedTerminal = .terminal
         updateMenu()
     }
     
     @objc func selectITerm2() {
         selectedTerminal = .iterm2
+        overlaySettings.selectedTerminal = .iterm
         updateMenu()
     }
     
@@ -255,7 +261,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         localEventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             if event.keyCode == 80 { // F19
                 self.handleF19Press()
-                return nil
+                return nil // Поглотить событие
             }
             return event
         }
@@ -264,6 +270,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         globalEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
             if event.keyCode == 80 { // F19
                 self.handleF19Press()
+                // Глобальный монитор автоматически поглощает события
             }
         }
     }

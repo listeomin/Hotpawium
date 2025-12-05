@@ -1,4 +1,6 @@
 import Foundation
+import SwiftUI
+import PhosphorSwift
 
 // Модель для команды
 struct Command: Identifiable {
@@ -17,16 +19,56 @@ struct CommandGroup: Identifiable {
 // Модель для категории
 struct Category: Identifiable {
     let id = UUID()
-    let emoji: String
+    let icon: Image // Прямая передача Phosphor иконки
     let title: String
     let groups: [CommandGroup]
 }
 
 // Данные для всех категорий
 let categories: [Category] = [
+    // ALIACE
+    Category(
+        icon: Ph.pawPrint.regular,
+        title: "Aliace",
+        groups: [
+            CommandGroup(
+                title: "БАЗА",
+                commands: [
+                    Command(title: "мяу", description: "перезагрузить настройки терминала"),
+                    Command(title: "гау", description: "перезапустить терминал"),
+                    Command(title: "гдея", description: "гдея"),
+                    Command(title: "файлы", description: "файлы"),
+                    Command(title: "вверх", description: "вверх на уровень")
+                ]
+            ),
+            CommandGroup(
+                title: "ГИТХАБ",
+                commands: [
+                    Command(title: "адд", description: "добавить все"),
+                    Command(title: "коммит", description: "закоммитить"),
+                    Command(title: "пуш", description: "запушить"),
+                    Command(title: "статус", description: "узнать статус гита"),
+                    Command(title: "пул", description: "подтянуть изменения")
+                ]
+            ),
+            CommandGroup(
+                title: "ПОЛЕЗНОЕ",
+                commands: [
+                    Command(title: "ало", description: "вызов Клауда"),
+                    Command(title: "подметика", description: "почистить кеш"),
+                    Command(title: "уберися", description: "почистить проект от мусора"),
+                    Command(title: "пинг", description: "пингануть google.com"),
+                    Command(title: "охота", description: "найти текст в файлах"),
+                    Command(title: "эхо", description: "повторить"),
+                    Command(title: "сон", description: "подождать")
+                ]
+            )
+        ]
+    ),
+    
     // GIT
     Category(
-        emoji: "🐾",
+        icon: Ph.githubLogo.regular,
         title: "GIT",
         groups: [
             CommandGroup(
@@ -64,7 +106,7 @@ let categories: [Category] = [
     
     // NPM
     Category(
-        emoji: "📦",
+        icon: Ph.package.regular,
         title: "NPM",
         groups: [
             CommandGroup(
@@ -102,7 +144,7 @@ let categories: [Category] = [
     
     // FILES
     Category(
-        emoji: "📁",
+        icon: Ph.folder.regular,
         title: "Files",
         groups: [
             CommandGroup(
@@ -140,7 +182,7 @@ let categories: [Category] = [
     
     // NETWORK
     Category(
-        emoji: "🌐",
+        icon: Ph.globe.regular,
         title: "Network",
         groups: [
             CommandGroup(
@@ -178,7 +220,7 @@ let categories: [Category] = [
     
     // SYSTEM
     Category(
-        emoji: "⚙️",
+        icon: Ph.gear.regular,
         title: "System",
         groups: [
             CommandGroup(
@@ -212,5 +254,6 @@ let categories: [Category] = [
                 ]
             )
         ]
-    )
+    ),
+    
 ]
